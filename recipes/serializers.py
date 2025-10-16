@@ -7,9 +7,10 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ['id', 'name', 'quantity', 'unit']
 
+
 # Recipe serializer
 class RecipeSerializer(serializers.ModelSerializer):
-    ingredients = IngredientSerializer(many=True)  # Nested ingredients
+    ingredients = IngredientSerializer(many=True, required=False)  # ← make ingredients optional
     author = serializers.ReadOnlyField(source='author.username')  # Show author's username
 
     class Meta:
@@ -26,10 +27,11 @@ class RecipeSerializer(serializers.ModelSerializer):
             'author',
             'ingredients',
         ]
+        read_only_fields = ['author', 'created_at']
 
-    # Handle nested ingredients creation
+    # Handle nested ingredients creation (optional)
     def create(self, validated_data):
-        ingredients_data = validated_data.pop('ingredients')
+        ingredients_data = validated_data.pop('ingredients', [])  # ← safely handle if missing
         recipe = Recipe.objects.create(**validated_data)
         for ingredient_data in ingredients_data:
             Ingredient.objects.create(recipe=recipe, **ingredient_data)
