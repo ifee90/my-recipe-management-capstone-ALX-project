@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ recipe.title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        .recipe { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 700px; }
+        .ingredients { margin-left: 20px; }
+        a { text-decoration: none; color: #3498db; margin-right: 10px; }
+        a:hover { text-decoration: underline; }
+        .btn { display: inline-block; margin-top: 10px; padding: 8px 12px; background-color: #27ae60; color: white; border-radius: 5px; }
+        .btn:hover { background-color: #2ecc71; }
+        .error { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="recipe">
+        <h1>{{ recipe.title }}</h1>
+        <p><strong>Category:</strong> {{ recipe.category }}</p>
+        <p><strong>Description:</strong> {{ recipe.description }}</p>
+        <p><strong>Preparation Time:</strong> {{ recipe.preparation_time }} minutes</p>
+        <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
+        <p><strong>Servings:</strong> {{ recipe.servings }}</p>
+
+        <h3>Ingredients:</h3>
+        <ul class="ingredients">
+            {% for ingredient in recipe.ingredients.all %}
+                <li>{{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name }}</li>
+            {% empty %}
+                <li>No ingredients listed.</li>
+            {% endfor %}
+        </ul>
+
+        <a href="{% url 'recipe-edit-frontend' pk=recipe.id %}" class="btn">Edit</a>
+        <form method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" formaction="{% url 'recipe-delete-frontend' pk=recipe.id %}" class="btn">Delete</button>
+        </form>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <a href="{% url 'recipe-list-frontend' %}" class="btn">Back to List</a>
+    </div>
+</body>
+</html>

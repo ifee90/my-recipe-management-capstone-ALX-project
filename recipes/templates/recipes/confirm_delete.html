@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Recipe</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 40px; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        button, a { padding: 8px 14px; border: none; border-radius: 4px; text-decoration: none; color: white; font-size: 14px; margin: 5px; cursor: pointer; }
+        .btn-confirm { background-color: #e74c3c; }
+        .btn-cancel { background-color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Are you sure you want to delete "<strong>{{ recipe.title }}</strong>"?</h2>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-confirm">Yes, Delete</button>
+            <a href="{% url 'recipe-list' %}" class="btn-cancel">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

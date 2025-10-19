@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if form.instance.pk %}Edit Recipe{% else %}Add New Recipe{% endif %}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>Title:</label>
+            {{ form.title }}
+        </div>
+
+        <div class="mb-3">
+            <label>Description:</label>
+            {{ form.description }}
+        </div>
+
+        <div class="mb-3">
+            <label>Cooking Method:</label>
+            {{ form.cooking_method }}
+        </div>
+
+        <div class="mb-3">
+            <label>Category:</label>
+            {{ form.category }}
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label>Preparation time:</label>
+                {{ form.preparation_time }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Cooking time:</label>
+                {{ form.cooking_time }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Servings:</label>
+                {{ form.servings }}
+            </div>
+        </div>
+
+        <hr>
+
+        <h4>Ingredients</h4>
+        <p>Select one or more ingredients that belong to this recipe.</p>
+        <div class="mb-3">
+            {{ form.ingredients }}
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'recipe-list' %}" class="btn btn-secondary">Back to List</a>
+
+            {% if form.instance.pk %}
+                <a href="#" class="btn btn-danger"
+                   onclick="if(confirm('Are you sure you want to delete this recipe?')) {
+                       window.location.href='{% url 'recipe-delete' form.instance.pk %}'
+                   }">Delete</a>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">Save Recipe</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
