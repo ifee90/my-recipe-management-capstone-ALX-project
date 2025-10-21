@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Recipe, Ingredient
 
+
 # -----------------------------------------
 # Ingredient Serializer
 # -----------------------------------------
@@ -15,7 +16,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 # -----------------------------------------
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(many=True, required=False)
-    author = serializers.ReadOnlyField(source='author.username')
+    owner = serializers.ReadOnlyField(source='owner.username')  # ✅ fixed from 'author' to 'owner'
 
     class Meta:
         model = Recipe
@@ -27,12 +28,12 @@ class RecipeSerializer(serializers.ModelSerializer):
             'preparation_time',
             'cooking_time',
             'servings',
-            'cooking_method',     # ← NEW FIELD
+            'cooking_method',
             'created_at',
-            'author',
+            'owner',           # fixed from 'author'
             'ingredients',
         ]
-        read_only_fields = ['author', 'created_at']
+        read_only_fields = ['owner', 'created_at']
 
     # Handle nested ingredient creation
     def create(self, validated_data):
@@ -49,7 +50,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
 
-        # Optional: update ingredients if provided
         if ingredients_data is not None:
             instance.ingredients.all().delete()
             for ingredient_data in ingredients_data:

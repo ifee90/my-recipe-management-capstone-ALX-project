@@ -46,8 +46,9 @@ class Ingredient(models.Model):
         blank=True
     )
     name = models.CharField(max_length=100)
-    quantity = models.FloatField(default=1.0)
-    unit = models.CharField(max_length=50, blank=True)
+    quantity = models.CharField(max_length=50)  # 👈 allows text like "2 cups" or "to taste"
+    unit = models.CharField(max_length=50, blank=True)  # optional, can hold 'grams', 'cups', etc.
+
 
     def __str__(self):
         if self.recipe:

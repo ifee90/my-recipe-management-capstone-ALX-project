@@ -14,7 +14,12 @@ from .forms import RecipeForm, IngredientForm
 class RecipeListCreateView(generics.ListCreateAPIView):
     """List all recipes or create a new one."""
     serializer_class = RecipeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        # Allow anyone to GET, but require login to POST
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
@@ -45,18 +50,6 @@ class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user != instance.owner:
             raise PermissionError("You can only delete your own recipes.")
         instance.delete()
-
-
-class IngredientListCreateView(generics.ListCreateAPIView):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class IngredientDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 # ----------------------------------------------------------
